@@ -10,3 +10,9 @@ docker-compose up -d
 
 tu down 
 docker-compose down -v 
+
+
+
+create .gitpod.yml
+## to open gitpod https://gitpod.io/#[your_github_repo_link]
+or install gitpod chrome extension 

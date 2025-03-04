@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 from airflow.decorators import dag, task
-
 default_args = {
     'owner': 'coder2j',
     'retries': 5,

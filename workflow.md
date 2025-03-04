@@ -5,7 +5,7 @@ https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index
 
 to run 
 if the docker-compose.yml file is modified you should use>> docker-compose up airflow-init
-
+docker-compose up --build
 docker-compose up -d 
 
 tu down 

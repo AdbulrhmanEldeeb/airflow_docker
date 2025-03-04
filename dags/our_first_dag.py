@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.bash import BashOperator
- 
+
 
 default_args = {
     'owner': 'coder2j',
@@ -11,11 +11,12 @@ default_args = {
 
 
 with DAG(
-    dag_id='our_first_dag_v7',
+    dag_id='our_first_dag_v9',
     default_args=default_args,
     description='This is our first dag that we write',
-    start_date=datetime(2025,8, 2, 6),
-    schedule_interval='@daily'
+    start_date=datetime(2025,3, 2, 6),
+    # cron expression
+    schedule_interval='30 3 * * 2-5'
 ) as dag:
     task1 = BashOperator(
         task_id='first_task',

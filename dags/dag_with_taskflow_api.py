@@ -9,11 +9,12 @@ default_args = {
 
 # >> is not needed in TaskFlow API 
 
-@dag(dag_id='dag_with_taskflow_api_v17', 
+@dag(dag_id='dag_with_taskflow_api_v10', 
      default_args=default_args, 
-     # it starts to process all dags before the current date and after start date to finish them as soon as possible 
      start_date=datetime(2025, 2, 27), 
      schedule_interval='@daily',
+    # it starts to process all dags before the current date and after start date to finish them as soon as possible
+    #  the catchup disables this 
      catchup=False,
      )
 def hello_world_etl(): 

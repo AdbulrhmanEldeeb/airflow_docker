@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
-
+from airflow.decorators import task
 from airflow import DAG
-from airflow.providers.postgres.operators.postgres import PostgresOperator
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 
-
+POSTGRES_CONN_ID="postgres_conn"
 default_args = {
     'owner': 'coder2j',
     'retries': 5,
@@ -12,36 +12,33 @@ default_args = {
 
 
 with DAG(
-    dag_id='dag_with_postgres_operator_v021',
+    dag_id='dag_with_postgres_operator_v022',
     default_args=default_args,
     start_date=datetime(2025, 2, 19),
-    schedule_interval='0 0 * * *'
+    schedule_interval='0 0 * * *',
+    catchup=False
 ) as dag:
-    task1 = PostgresOperator(
-        task_id='create_postgres_table',
-        postgres_conn_id='postgres_localhost',
-        sql="""
-            create table if not exists dag_runs (
-                dt date,
-                dag_id character varying,
-                primary key (dt, dag_id)
-            )
-        """
-    )
+    @task
+    def create_table():
+        """Load transformed data into PostgreSQL."""
+        try:
+            pg_hook = PostgresHook(postgres_conn_id=POSTGRES_CONN_ID)
+            conn = pg_hook.get_conn()
+            cursor = conn.cursor()
 
-    task2 = PostgresOperator(
-        task_id='insert_into_table',
-        postgres_conn_id='postgres_localhost',
-        sql="""
-            insert into dag_runs (dt, dag_id) values ('{{ ds }}', '{{ dag.dag_id }}')
-        """
-    )
+            # Create table if it doesn't exist
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS i_succeded (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(255),
+                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            """)
+            print("~~~~~~~~~~~created table succesfully~~~~~~~~~~~")
+            conn.commit()
+            cursor.close()
+        except Exception as e:
+            print(e)
 
-    task3 = PostgresOperator(
-        task_id='delete_data_from_table',
-        postgres_conn_id='postgres_localhost',
-        sql="""
-            delete from dag_runs where dt = '{{ ds }}' and dag_id = '{{ dag.dag_id }}';
-        """
-    )
-    task1 >> task3 >> task2
+    create_table()
+

@@ -12,11 +12,31 @@ exit
 
 
 # to connect to postgres database 
-## 1 -modify the service postgres in  docker-compose.yml and add     
-ports:
-    - 5432:5432
-after volumes which has the same indentation like volumes 
+host a postgres database and get it's credintials (avien gives free postgress databases)
+edit docker-compose the following section for your credintials (use help of llm)
+    ```
+    services:
+    postgres:
+        image: postgres:13
+        environment:
+        POSTGRES_USER: avnadmin
+        POSTGRES_PASSWORD: ${avien_postegres_password}
+        POSTGRES_DB: defaultdb
+        ports:
+        - "22114:5432"
+        healthcheck:
+        test: ["CMD", "pg_isready", "-U", "avnadmin"]
+        interval: 10s
+        retries: 5
+        start_period: 5s
+        restart: always
+    ```
+create a connection in admin in the airflow ui 
+modify the dag py file to include the connection_id 
+test dag
 
 ## 2- run to rebuild 
 docker-compose up -d --no-deps --build postgres        
 where postgres is the service name in the docker-compose.yml 
+
+

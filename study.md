@@ -40,3 +40,34 @@ docker-compose up -d --no-deps --build postgres
 where postgres is the service name in the docker-compose.yml 
 
 
+
+## to add more python dependencies to the docker image 
+## create requiremnts.txt and docker file like created one , then run :
+docker build . --tag extending_airflow:latest 
+
+# change docker image name in docker-compose file to the image you created and then run 
+docker-compose up -d --no-deps  --build 
+
+
+## minio 
+# documntation: https://min.io/docs/minio/container/index.html
+## run the following command to open minio 
+
+mkdir -p ~/minio/data
+
+docker run \
+   -p 9000:9000 \
+   -p 9001:9001 \
+   --name minio \
+   -v ~/minio/data:/data \
+   -e "MINIO_ROOT_USER=airflow" \
+   -e "MINIO_ROOT_PASSWORD=airflow" \
+   quay.io/minio/minio server /data --console-address ":9001"
+
+## to know version of the amazon airflow package provider 
+docker ps 
+
+docker exec -it schecudler_container_id /bin/bash
+pip list | grep amazon 
+
+

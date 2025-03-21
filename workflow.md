@@ -8,7 +8,7 @@ if the docker-compose.yml file is modified you should use>> docker-compose up ai
 docker-compose up --build
 docker-compose up -d 
 
-tu down 
+# to down 
 docker-compose down -v 
 
 
